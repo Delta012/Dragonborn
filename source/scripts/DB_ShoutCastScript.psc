@@ -42,7 +42,7 @@ Event OnSpellCast(Form akSpell)
 		endIf
 	endIf
 
-endEvent 
+EndEvent 
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
 
