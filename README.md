@@ -1,2 +1,3 @@
-# Dragonborn-Shouts-Perk-Tree
-https://docs.google.com/document/d/1htuOqbJIq6pwLkVv3isM1mwk3M_6aNhMeC89i6KVcJ4
+# Dragonborn - Shouts Perk Tree
+
+Dragonborn - Shouts Perk Tree is a standalone perk tree designed to be paired with Forceful Tongue - Shouts Overhaul, but doesn’t require it.
