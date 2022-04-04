@@ -13,6 +13,8 @@ int Property NextPerk Auto
 
 Message Property DB_PerkMessage Auto
 
+Keyword Property MagicShout Auto
+
 Perk Property DB_DragonBlood10 Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -24,25 +26,27 @@ endEvent
 Event OnSpellCast(Form akSpell)
 
 	If PlayerRef.IsInCombat()
-		Spell ShoutSpell = akSpell as Spell
+		If (akSpell.HasKeyword(MagicShout))
 			Shout EquippedShout = PlayerRef.GetEquippedShout()
-			If ShoutSpell == EquippedShout.GetNthSpell(0)
+			If EquippedShout.GetNthSpell(0)
 				DBAdvanceSkillCombat1()
-			elseIf ShoutSpell == EquippedShout.GetNthSpell(1)
+			elseIf EquippedShout.GetNthSpell(1)
 				DBAdvanceSkillCombat2()
-			elseIf ShoutSpell == EquippedShout.GetNthSpell(2)
+			elseIf EquippedShout.GetNthSpell(2)
 				DBAdvanceSkillCombat3()
 			endIf
+		endIf
 	else
-		Spell ShoutSpell = akSpell as Spell
+		If (akSpell.HasKeyword(MagicShout))
 			Shout EquippedShout = PlayerRef.GetEquippedShout()
-			If ShoutSpell == EquippedShout.GetNthSpell(0)
+			If EquippedShout.GetNthSpell(0)
 				DBAdvanceSkillExploration1()
-			elseIf ShoutSpell == EquippedShout.GetNthSpell(1)
+			elseIf EquippedShout.GetNthSpell(1)
 				DBAdvanceSkillExploration2()
-			elseIf ShoutSpell == EquippedShout.GetNthSpell(2)
+			elseIf EquippedShout.GetNthSpell(2)
 				DBAdvanceSkillExploration3()
 			endIf
+		endIf
 	endIf
 
 EndEvent
