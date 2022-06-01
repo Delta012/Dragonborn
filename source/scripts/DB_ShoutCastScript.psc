@@ -15,30 +15,28 @@ Spell Property DB_TheTongue Auto
 
 Event OnSpellCast(Form akSpell)
 
-	If PlayerRef.IsInCombat() && PlayerRef.HasPerk(DB_PaarThurNax100)
-		If (akSpell.HasKeyword(MagicShout))
-			While (ShoutTimes < 3)
+	If (akSpell.HasKeyword(MagicShout))
+		If PlayerRef.IsInCombat()
+			If PlayerRef.HasPerk(DB_PaarThurNax100)
+				While (ShoutTimes < 3)
+					Utility.Wait(0.250000)
+					If PlayerRef.GetVoiceRecoveryTime() <= 300 && PlayerRef.GetVoiceRecoveryTime() > 0
+						PlayerRef.SetVoiceRecoveryTime(0)
+						ShoutTimes += 1
+					endIf
+				endWhile
+			endIf
+			
+			If PlayerRef.HasPerk(DB_TheTongue80)
+				DB_TheTongue.Cast(PlayerRef)
+			endIf
+			
+			If PlayerRef.HasPerk(DB_HardenedArmor40)
 				Utility.Wait(0.250000)
-				If PlayerRef.GetVoiceRecoveryTime() <= 300 && PlayerRef.GetVoiceRecoveryTime() > 0
-					PlayerRef.SetVoiceRecoveryTime(0)
-					ShoutTimes += 1
-				endIf
-			endWhile
-		endIf
-	endIf
-
-	If PlayerRef.IsInCombat() && PlayerRef.HasPerk(DB_TheTongue80)
-		If (akSpell.HasKeyword(MagicShout))
-			DB_TheTongue.Cast(PlayerRef)
-		endIf
-	endIf
-
-	If PlayerRef.IsInCombat() && PlayerRef.HasPerk(DB_HardenedArmor40)
-		If (akSpell.HasKeyword(MagicShout))
-			Utility.Wait(0.250000)
-			Float SpellDuration = PlayerRef.GetVoiceRecoveryTime()
-			DB_HardenedArmor.SetNthEffectDuration(0, SpellDuration as int)
-			DB_HardenedArmor.Cast(PlayerRef, PlayerRef)
+				Float SpellDuration = PlayerRef.GetVoiceRecoveryTime()
+				DB_HardenedArmor.SetNthEffectDuration(0, SpellDuration as int)
+				DB_HardenedArmor.Cast(PlayerRef, PlayerRef)
+			endIf
 		endIf
 	endIf
 
