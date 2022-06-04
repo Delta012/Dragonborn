@@ -19,6 +19,10 @@ ObjectReference CasterRef
 
 Perk Property DB_DragonBlood10 Auto
 
+Shout EquippedShout
+
+Spell ShoutSpell
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 
 	RegisterForTrackedStatsEvent()
@@ -28,24 +32,12 @@ endEvent
 Event OnSpellCast(Form akSpell)
 
 	If (akSpell.HasKeyword(MagicShout))
+		EquippedShout = PlayerRef.GetEquippedShout()
+		ShoutSpell = akSpell as Spell
 		If PlayerRef.IsInCombat()
-			Shout EquippedShout = PlayerRef.GetEquippedShout()
-			If EquippedShout.GetNthSpell(0)
-				DBAdvanceSkillCombat1()
-			elseIf EquippedShout.GetNthSpell(1)
-				DBAdvanceSkillCombat2()
-			elseIf EquippedShout.GetNthSpell(2)
-				DBAdvanceSkillCombat3()
-			endIf
+			DBAdvanceSkillCombat()
 		else
-			Shout EquippedShout = PlayerRef.GetEquippedShout()
-			If EquippedShout.GetNthSpell(0)
-				DBAdvanceSkillExploration1()
-			elseIf EquippedShout.GetNthSpell(1)
-				DBAdvanceSkillExploration2()
-			elseIf EquippedShout.GetNthSpell(2)
-				DBAdvanceSkillExploration3()
-			endIf
+			DBAdvanceSkillExploration()
 		endIf
 	endIf
 
@@ -59,13 +51,23 @@ Event OnTrackedStatsEvent(String asStatFilter, Int aiStatValue)
 
 EndEvent
 
-Function DBAdvanceSkillCombat1()
+Function DBAdvanceSkillCombat()
 
 	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 5 * 5 + (Game.QueryStat("Shouts Mastered"))
+		Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
+		If ShoutSpell == EquippedShout.GetNthSpell(0)
+			Float DBShoutsExp = 50 * (1 + Game.QueryStat("Shouts Mastered") / 2)
 			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
 			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
+		elseIf ShoutSpell == EquippedShout.GetNthSpell(1)
+			Float DBShoutsExp = 100 * (1 + Game.QueryStat("Shouts Mastered") / 2)
+			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
+			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
+		elseIf ShoutSpell == EquippedShout.GetNthSpell(3)
+			Float DBShoutsExp = 150 * (1 + Game.QueryStat("Shouts Mastered") / 2)
+			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
+			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
+		endIf
 	endIf
 
 	If DB_SkillProgress.Value >= 1.0
@@ -85,117 +87,23 @@ Function DBAdvanceSkillCombat1()
 
 EndFunction
 
-Function DBAdvanceSkillCombat2()
+Function DBAdvanceSkillExploration()
 
 	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 7.5 * 5 + (Game.QueryStat("Shouts Mastered"))
+		Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
+		If ShoutSpell == EquippedShout.GetNthSpell(0)
+			Float DBShoutsExp = 5 * (1 + Game.QueryStat("Shouts Mastered") / 2)
 			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
 			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
-	endIf
-
-	If DB_SkillProgress.Value >= 1.0
-		DB_Level.Mod(1.0)
-		DB_LevelUp.SetValue(DB_Level.Value)
-		Float DBCumulativeProgress = DB_SkillProgress.GetValue() - 1
-		DB_SkillProgress.SetValue(DBCumulativeProgress)
-			While (NextPerk < 100)
-				If DB_Level.Value >= NextPerk && DB_PerkPointsTotal.Value < 12
-				DB_PerkPoints.Value += 1
-				DB_PerkPointsTotal.Value += 1
-				NextPerk += 10
-				DB_PerkMessage.Show()
-				endIf
-			endWhile
-	endIf
-
-EndFunction
-
-Function DBAdvanceSkillCombat3()
-
-	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 10 * 5 + (Game.QueryStat("Shouts Mastered"))
+		elseIf ShoutSpell == EquippedShout.GetNthSpell(1)
+			Float DBShoutsExp = 10 * (1 + Game.QueryStat("Shouts Mastered") / 2)
 			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
 			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
-	endIf
-
-	If DB_SkillProgress.Value >= 1.0
-		DB_Level.Mod(1.0)
-		DB_LevelUp.SetValue(DB_Level.Value)
-		Float DBCumulativeProgress = DB_SkillProgress.GetValue() - 1
-		DB_SkillProgress.SetValue(DBCumulativeProgress)
-			While (NextPerk < 100)
-				If DB_Level.Value >= NextPerk && DB_PerkPointsTotal.Value < 12
-				DB_PerkPoints.Value += 1
-				DB_PerkPointsTotal.Value += 1
-				NextPerk += 10
-				DB_PerkMessage.Show()
-				endIf
-			endWhile
-	endIf
-
-EndFunction
-
-Function DBAdvanceSkillExploration1()
-
-	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 1.5 * 5 + (Game.QueryStat("Shouts Mastered"))
+		elseIf ShoutSpell == EquippedShout.GetNthSpell(2)
+			Float DBShoutsExp = 15 * (1 + Game.QueryStat("Shouts Mastered") / 2)
 			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
 			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
-	endIf
-
-	If DB_SkillProgress.Value >= 1.0
-		DB_Level.Mod(1.0)
-		DB_LevelUp.SetValue(DB_Level.Value)
-		Float DBCumulativeProgress = DB_SkillProgress.GetValue() - 1
-		DB_SkillProgress.SetValue(DBCumulativeProgress)
-			While (NextPerk < 100)
-				If DB_Level.Value >= NextPerk && DB_PerkPointsTotal.Value < 12
-				DB_PerkPoints.Value += 1
-				DB_PerkPointsTotal.Value += 1
-				NextPerk += 10
-				DB_PerkMessage.Show()
-				endIf
-			endWhile
-	endIf
-
-EndFunction
-
-Function DBAdvanceSkillExploration2()
-
-	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 2 * 5 + (Game.QueryStat("Shouts Mastered"))
-			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
-			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
-	endIf
-
-	If DB_SkillProgress.Value >= 1.0
-		DB_Level.Mod(1.0)
-		DB_LevelUp.SetValue(DB_Level.Value)
-		Float DBCumulativeProgress = DB_SkillProgress.GetValue() - 1
-		DB_SkillProgress.SetValue(DBCumulativeProgress)
-			While (NextPerk < 100)
-				If DB_Level.Value >= NextPerk && DB_PerkPointsTotal.Value < 12
-				DB_PerkPoints.Value += 1
-				DB_PerkPointsTotal.Value += 1
-				NextPerk += 10
-				DB_PerkMessage.Show()
-				endIf
-			endWhile
-	endIf
-
-EndFunction
-
-Function DBAdvanceSkillExploration3()
-
-	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
-			Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-			Float DBShoutsExp = 2.5 * 5 + (Game.QueryStat("Shouts Mastered"))
-			Float DBExpPoints = (DBShoutsExp / DBLevelCost)
-			DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
+		endIf
 	endIf
 
 	If DB_SkillProgress.Value >= 1.0
@@ -219,7 +127,7 @@ Function DBAdvanceSkillDragon()
 
 	If DB_Level.GetValueInt() < DB_LevelMax.GetValueInt()
 		Float DBLevelCost = 2 * (DB_Level.GetValue() * DB_Level.GetValue())
-		Float DBShoutsExp = 15 * 5 + (Game.QueryStat("Shouts Mastered"))
+		Float DBShoutsExp = 15 * (1 + Game.QueryStat("Shouts Mastered") / 2)
 		Float DBExpPoints = (DBShoutsExp / DBLevelCost)
 		DB_SkillProgress.SetValue(DB_SkillProgress.GetValue() + DBExpPoints)
 	endIf
